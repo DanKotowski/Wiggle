@@ -1,0 +1,84 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Wiggle Demo</title>
+    <link rel="stylesheet" href="wiggle.css" />
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body>
+<div class="topContainer">
+    <div class="container"><div class="cancelButton">X</div>$1000</div>
+    <div class="container"><div class="cancelButton">X</div>$2000</div>
+    <div class="container"><div class="cancelButton">X</div>$3000</div>
+    <div class="clear"></div>
+</div>
+<script>
+
+    var element;
+
+    function AnimateWiggle(d){
+
+        element =  $({deg: 0}).animate({deg: d}, {
+            duration: 100,
+            step: function (now) {
+                $('.container').css({
+                    transform: "rotate(" + now + "deg)",
+                    "-ms-transform":"rotate(" + now + "deg)"
+                });
+            },
+            complete:function(){
+                if(d == 2){
+                    AnimateWiggle(-2);
+                }else if(d==-2){
+                    AnimateWiggle(2);
+                }
+
+            }
+    })
+    }
+
+    function resetWiggle(){
+        $('.cancelButton').toggle();
+        element.stop();
+        $('.container').css({
+            transform: "rotate(0deg)",
+            "-ms-transform":"rotate(0deg)"
+        });
+    }
+
+    var timeoutId = 0;
+
+    $('.container').mousedown(function(){
+        timeoutId = setTimeout(function(){
+
+            bindBackgroundClick();
+            $('.cancelButton').toggle();
+            AnimateWiggle(2);
+        },1000);
+
+    }).bind('mouseup mouseleave',function(){
+        clearTimeout(timeoutId);
+    });
+
+    function bindBackgroundClick(){
+
+        $('.topContainer').addClass("span-active");
+
+        $('.topContainer').click(function(e){
+            if($(e.target).hasClass('span-active')){
+                element.stop();
+                resetWiggle();
+                $('.topContainer').removeClass("span-active");
+                $('.topContainer').unbind('click');
+            }
+        });
+    }
+
+
+
+
+
+</script>
+
+</body>
+</html>
